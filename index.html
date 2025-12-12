@@ -1,0 +1,813 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>for u love 🤍</title>
+  <meta name="theme-color" content="#0b1020" />
+  <style>
+    /* ====== RESET ====== */
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      color: rgba(255,255,255,.92);
+      background: radial-gradient(1200px 800px at 15% 10%, rgba(255,0,128,.20), transparent 60%),
+                  radial-gradient(1000px 700px at 85% 20%, rgba(0,200,255,.18), transparent 55%),
+                  radial-gradient(900px 600px at 50% 90%, rgba(120,255,180,.12), transparent 55%),
+                  #070A12;
+      overflow-x:hidden;
+    }
+
+    /* ====== BACKGROUND FX ====== */
+    .bg-grid{
+      position:fixed; inset:0; pointer-events:none; opacity:.25;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.08) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: radial-gradient(700px 500px at 50% 10%, rgba(0,0,0,1), rgba(0,0,0,0));
+      filter: blur(.2px);
+      z-index:0;
+    }
+    canvas#stars, canvas#hearts{
+      position:fixed; inset:0; z-index:0; pointer-events:none;
+    }
+
+    /* ====== LAYOUT ====== */
+    .wrap{position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:32px 18px 90px;}
+    .nav{
+      position:sticky; top:14px; z-index:5;
+      display:flex; gap:10px; align-items:center; justify-content:space-between;
+      padding:12px 14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(10,14,28,.55);
+      backdrop-filter: blur(14px);
+      border-radius:18px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.35);
+    }
+    .brand{display:flex; gap:10px; align-items:center;}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      font-size:13px;
+    }
+    .pill .dot{width:8px;height:8px;border-radius:999px;background:linear-gradient(90deg,#ff4fd8,#7cf7ff)}
+    .nav a{
+      color:rgba(255,255,255,.85);
+      text-decoration:none;
+      padding:10px 12px;
+      border-radius:12px;
+      transition:.18s;
+      border:1px solid transparent;
+      font-size:14px;
+      white-space:nowrap;
+    }
+    .nav a:hover{background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.10)}
+    .nav .links{display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end}
+
+    /* ====== HERO ====== */
+    .hero{
+      margin-top:22px;
+      padding:34px 22px;
+      border-radius:26px;
+      border:1px solid rgba(255,255,255,.14);
+      background:
+        radial-gradient(800px 300px at 20% 0%, rgba(255,79,216,.22), transparent 55%),
+        radial-gradient(900px 450px at 80% 40%, rgba(124,247,255,.18), transparent 60%),
+        rgba(255,255,255,.06);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::after{
+      content:"";
+      position:absolute; inset:-120px;
+      background: conic-gradient(from 210deg, rgba(255,79,216,.0), rgba(255,79,216,.25), rgba(124,247,255,.25), rgba(255,79,216,.0));
+      filter: blur(34px);
+      opacity:.55;
+      animation: spin 10s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .hero > *{position:relative; z-index:1}
+
+    .kicker{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .tag{
+      padding:8px 12px; border-radius:999px;
+      background: rgba(0,0,0,.25);
+      border:1px solid rgba(255,255,255,.14);
+      font-size:13px;
+    }
+    .title{
+      margin:14px 0 8px;
+      font-size: clamp(28px, 4.2vw, 54px);
+      line-height:1.05;
+      letter-spacing:-.02em;
+    }
+    .sub{
+      margin:0;
+      font-size: clamp(14px, 1.6vw, 17px);
+      color: rgba(255,255,255,.78);
+      max-width: 70ch;
+    }
+    .type{
+      display:inline-block;
+      border-right: 2px solid rgba(255,255,255,.8);
+      padding-right:6px;
+      animation: caret .85s step-end infinite;
+    }
+    @keyframes caret{50%{border-color:transparent}}
+
+    .ctaRow{
+      margin-top:18px;
+      display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+    }
+    .btn{
+      cursor:pointer;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color:rgba(255,255,255,.92);
+      font-weight:600;
+      transition: transform .12s ease, background .15s ease;
+      box-shadow: 0 10px 35px rgba(0,0,0,.35);
+      user-select:none;
+    }
+    .btn:hover{background:rgba(255,255,255,.12)}
+    .btn:active{transform:scale(.98)}
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(255,79,216,.55), rgba(124,247,255,.35));
+      border-color: rgba(255,255,255,.22);
+    }
+    .mini{
+      font-size:13px; color:rgba(255,255,255,.75)
+    }
+
+    /* ====== SECTIONS ====== */
+    section{margin-top:18px}
+    .grid{
+      display:grid; gap:14px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .card{
+      grid-column: span 12;
+      border-radius:22px;
+      padding:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 14px 45px rgba(0,0,0,.38);
+      overflow:hidden;
+      position:relative;
+    }
+    .card h2{
+      margin:0 0 10px;
+      font-size:18px;
+      letter-spacing:.2px;
+    }
+    .muted{color:rgba(255,255,255,.74); margin:0; line-height:1.6}
+    .cardGlow{
+      position:absolute; inset:-80px;
+      background: radial-gradient(400px 240px at 20% 10%, rgba(255,79,216,.22), transparent 60%),
+                  radial-gradient(420px 250px at 85% 30%, rgba(124,247,255,.18), transparent 62%);
+      filter: blur(28px);
+      opacity:.8;
+      pointer-events:none;
+    }
+    .card > *{position:relative; z-index:1}
+
+    @media (min-width: 860px){
+      .card.span7{grid-column: span 7}
+      .card.span5{grid-column: span 5}
+      .card.span6{grid-column: span 6}
+    }
+
+    /* ====== GALLERY ====== */
+    .gallery{
+      display:grid; gap:12px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (min-width: 720px){
+      .gallery{grid-template-columns: repeat(4, 1fr)}
+    }
+    .ph{
+      position:relative;
+      border-radius:18px;
+      overflow:hidden;
+      aspect-ratio: 1 / 1;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      cursor:pointer;
+      transform: translateZ(0);
+    }
+    .ph img{
+      width:100%; height:100%; object-fit:cover;
+      filter: saturate(1.05) contrast(1.03);
+      transition: transform .28s ease;
+    }
+    .ph:hover img{transform: scale(1.06)}
+    .ph .cap{
+      position:absolute; left:10px; right:10px; bottom:10px;
+      padding:10px 10px;
+      border-radius:14px;
+      background: rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.16);
+      backdrop-filter: blur(10px);
+      font-size:12.5px;
+      color:rgba(255,255,255,.9);
+      opacity:0;
+      transform: translateY(8px);
+      transition: .2s ease;
+    }
+    .ph:hover .cap{opacity:1; transform: translateY(0)}
+
+    /* ====== TIMELINE ====== */
+    .timeline{display:grid; gap:10px; margin-top:8px}
+    .titem{
+      display:flex; gap:12px; align-items:flex-start;
+      padding:12px; border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+    }
+    .badge{
+      min-width:44px; height:44px; border-radius:14px;
+      display:grid; place-items:center;
+      background: linear-gradient(135deg, rgba(255,79,216,.35), rgba(124,247,255,.25));
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      font-weight:800;
+    }
+    .titem h3{margin:0; font-size:15px}
+    .titem p{margin:4px 0 0; color:rgba(255,255,255,.75); line-height:1.55; font-size:13.5px}
+
+    /* ====== NOTE ====== */
+    .note{
+      min-height: 160px;
+      width:100%;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.25);
+      color:rgba(255,255,255,.92);
+      padding:14px 14px;
+      outline:none;
+      resize: vertical;
+      line-height:1.6;
+      font-size:14px;
+    }
+    .note::placeholder{color:rgba(255,255,255,.45)}
+
+    /* ====== MODAL ====== */
+    .modal{
+      position:fixed; inset:0; display:none;
+      align-items:center; justify-content:center;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      z-index: 50;
+      padding: 20px;
+    }
+    .modal.open{display:flex}
+    .modalBox{
+      max-width:720px; width:100%;
+      border-radius:26px;
+      border:1px solid rgba(255,255,255,.16);
+      background:
+        radial-gradient(900px 350px at 30% 0%, rgba(255,79,216,.20), transparent 60%),
+        radial-gradient(900px 450px at 90% 40%, rgba(124,247,255,.16), transparent 62%),
+        rgba(15,18,32,.72);
+      box-shadow: 0 20px 80px rgba(0,0,0,.6);
+      overflow:hidden;
+      position:relative;
+    }
+    .modalBox .inner{padding:18px 18px 16px}
+    .closeRow{display:flex; justify-content:space-between; gap:10px; align-items:center; padding:16px 18px 0}
+    .closeRow b{font-size:14px; color:rgba(255,255,255,.86)}
+    .xbtn{
+      cursor:pointer;
+      border-radius:14px; padding:10px 12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color:rgba(255,255,255,.9);
+    }
+
+    /* ====== FOOTER ====== */
+    .footer{
+      margin-top:18px;
+      text-align:center;
+      color:rgba(255,255,255,.55);
+      font-size:13px;
+    }
+    .floatHint{
+      position:fixed; right:14px; bottom:14px; z-index:20;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(10,14,28,.55);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 12px 44px rgba(0,0,0,.45);
+      max-width: 240px;
+      display:flex; gap:10px; align-items:flex-start;
+    }
+    .floatHint .emoji{font-size:18px; margin-top:1px}
+    .floatHint small{display:block; color:rgba(255,255,255,.7); line-height:1.35}
+
+    /* subtle reveal animation */
+    .reveal{opacity:0; transform: translateY(12px); transition: .55s ease}
+    .reveal.in{opacity:1; transform:none}
+  </style>
+</head>
+
+<body>
+  <div class="bg-grid"></div>
+  <canvas id="stars"></canvas>
+  <canvas id="hearts"></canvas>
+
+  <div class="wrap">
+    <div class="nav">
+      <div class="brand">
+        <div class="pill"><span class="dot"></span><span id="loveName">Untuk Kamu</span></div>
+        <div class="pill" id="todayPill">🗓️ <span id="todayTxt">hari ini</span></div>
+      </div>
+      <div class="links">
+        <a href="#memories">Kenangan</a>
+        <a href="#gallery">Foto</a>
+        <a href="#letter">Surat</a>
+        <a href="#mood">Mood Boost</a>
+      </div>
+    </div>
+
+    <div class="hero reveal">
+      <div class="kicker">
+        <span class="tag">✨ mode: pulang kerja</span>
+        <span class="tag">🫶 napas dulu</span>
+        <span class="tag">🌙 chill + hangat</span>
+      </div>
+
+      <h1 class="title">
+        aiyow <span id="herName">Abeyku</span>,<br/>
+        <span class="type" id="typeLine">hihi lucuu nda aku bikin ini?…</span>
+      </h1>
+
+      <p class="sub" id="subLine">
+        huhu lembur ya sayang, cini cini nyandar dulu. abuy nda mau kamo nahan capekk hari ini cendiri. SAYANGG COBAIN KLIK DI BAWAH 🤍
+      </p>
+
+      <div class="ctaRow">
+        <button class="btn primary" id="btnSurprise">Buka Surprise ✨</button>
+        <button class="btn" id="btnHug">HUG Virtual ke Pati 🤍</button>
+        <span class="mini" id="miniLine">Tip: scroll pelan-pelan tayang, kamo liat pasti gemec.</span>
+      </div>
+    </div>
+
+    <section class="grid" id="memories">
+      <div class="card span7 reveal">
+        <div class="cardGlow"></div>
+        <h2>📌 kenangan favorit kita bby</h2>
+        <p class="muted" id="memIntro">
+          sayangnya akuu, semogaaa lihat ini jadi happy dan capek nya ilang ya bby, abey nda sendiriaaaannn, peyukk
+        </p>
+
+        <div class="timeline" id="timeline">
+          <!-- EDIT: timeline items (boleh tambah/kurang) -->
+          <div class="titem">
+            <div class="badge">1</div>
+            <div>
+              <h3>pokonya malem ini kita ketawa sampai pegel, sebelum abey berangkat</h3>
+              <p>jadi kangen ketawa bareng pas ketemu bey...</p>
+            </div>
+          </div>
+          <div class="titem">
+            <div class="badge">2</div>
+            <div>
+              <h3>sayang, hari ini aku tau kamu cape banget,  terimakasih yaa uda selalu keren tiap harinya</h3>
+              <p>Aku bangga sama kamu. Kalau kamu ngerasa “kok aku capek banget”, ndapapa sayang. cayangku manusia, bukan mesin, kalo teknik mesin kan si surya.</p>
+            </div>
+          </div>
+          <div class="titem">
+            <div class="badge">3</div>
+            <div>
+              <h3>Hari kita bikin plan kecil cayang</h3>
+              <p>cayang beres-beres, maem, istirahat bobo sambil vc ya sayang.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card span5 reveal" id="mood">
+        <div class="cardGlow"></div>
+        <h2>🎧 Mood Booster</h2>
+        <p class="muted" id="moodText">
+          SAYANGG! Klik satu tombol, teyus teyus tarik napas pelan pelan. hiyakk adik kirim “energi tenang” buat abuyy.
+        </p>
+        <div class="ctaRow">
+          <button class="btn primary" id="btnBoost">Boost Sekarang 💫</button>
+          <button class="btn" id="btnConfetti">Hujan Hati 💗</button>
+        </div>
+
+        <p class="muted" style="margin-top:10px;font-size:13.5px">
+          sayang, hehe coba dengerin iniii <b>assets/song.mp3</b>.
+          <br/>Nanti pencet play ya abey :
+        </p>
+        <audio id="audio" controls style="width:100%; margin-top:10px; border-radius:14px;"></audio>
+      </div>
+    </section>
+
+    <section class="card reveal" id="gallery">
+      <div class="cardGlow"></div>
+      <h2>🖼️ Our Photo bby (klik cayang biar bisa di zoom)</h2>
+      <p class="muted">micc uuuu <b> assets/</b>, </p>
+
+      <div class="gallery" id="galleryGrid">
+        <!-- EDIT: ganti src & caption sesuai foto kalian -->
+        <div class="ph" data-caption="Ini aku paling suka: kamu keliatan tenang.">
+          <img src="./assets/1.jpg" alt="foto 1">
+          <div class="cap">Ini aku paling suka: kamu keliatan tenang.</div>
+        </div>
+        <div class="ph" data-caption="Kita di sini lucu banget—aku masih senyum kalau inget.">
+          <img src="./assets/2.jpg" alt="foto 2">
+          <div class="cap">Kita di sini lucu banget—aku masih senyum kalau inget.</div>
+        </div>
+        <div class="ph" data-caption="Aku pilih foto ini karena: kamu itu rumah.">
+          <img src="./assets/3.jpg" alt="foto 3">
+          <div class="cap">Aku pilih foto ini karena: kamu itu rumah.</div>
+        </div>
+        <div class="ph" data-caption="Kalau capek, inget: kita satu tim.">
+          <img src="./assets/4.jpg" alt="foto 4">
+          <div class="cap">Kalau capek, inget: kita satu tim.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid" id="letter">
+      <div class="card span6 reveal">
+        <div class="cardGlow"></div>
+        <h2>💌 Surat Kecil</h2>
+        <p class="muted" id="letterText">
+          Sayang, kalau dunia lagi keras, aku pengennnn buanget kamu punya tempat yang lembut.
+          maap yaa aku marah-marah mulu, tapi tapi aku gak akan ngilang. Aku mau jadi “pulang” buat kamu, pelan-pelan, tiap hari.
+          <br><br>
+          Kalau kamu ngerasa capek, bilang ya. Kita istirahat bareng. Aku sayang kamu.
+        </p>
+        <div class="ctaRow">
+          <button class="btn" id="btnCopy">Copy Surat</button>
+          <button class="btn primary" id="btnSecret">Buka Pesan Rahasia 🔒</button>
+        </div>
+      </div>
+
+      <div class="card span6 reveal">
+        <div class="cardGlow"></div>
+        <h2>📝 Catatan Buat Kamu (dia bisa ngetik juga)</h2>
+        <p class="muted">sayang bisa tulis cerita/ unek unek di cini</p>
+        <textarea class="note" id="note" placeholder="Tulis apa aja di sini… misal: hari ini aku capek karena…, tapi aku bangga karena…"></textarea>
+        <div class="ctaRow">
+          <button class="btn" id="btnSave">Simpan</button>
+          <button class="btn" id="btnClear">Hapus</button>
+          <span class="mini" id="saveStatus"></span>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer reveal">
+      by your LOveEe 🤍 oleh <span id="fromName">Fia</span> — khusus untuk <span id="forName">kamu</span>.
+      <br/>PS: pencet <b>Shift</b> + <b>L</b> buat mode “lebih romantis”.
+    </div>
+  </div>
+
+  <div class="floatHint" id="hint">
+    <div class="emoji">💡</div>
+    <div>
+      <b style="font-size:13px; color:rgba(255,255,255,.88)">Easter egg</b>
+      <small>Kalau kamu klik “Peluk Virtual” 3x… ada cecuatu 😳</small>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal">
+    <div class="modalBox">
+      <div class="closeRow">
+        <b id="modalTitle">Surprise ✨</b>
+        <button class="xbtn" id="btnClose">Tutup</button>
+      </div>
+      <div class="inner">
+        <p class="muted" id="modalBody" style="margin-top:6px">
+          Kamu udah hebat hari ini. Bahkan kalau kamu cuma “bertahan”, itu juga hebat. Aku bangga sama kamu abeyku.
+          <br/><br/>
+          <b>Checklist kecil:</b> sayang, nanti puyang kos jangan lupa mimi air, lepas sepatu, tarik napas 4 detik… hembus 6 detik teyusss ganti baju istirahat sayang.
+          <br/><br/>
+          Kalau sayang mau, CHAT aku: “peYuk” (Y nya besar wkwkw) nanti aku beneran peyuk deh ke Pati 🤍
+        </p>
+        <div class="ctaRow" style="margin-top:12px">
+          <button class="btn primary" id="btnGlow">Nyalain Mode Hangat ✨</button>
+          <button class="btn" id="btnZoomOut">Lihat Foto Tadi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMAGE ZOOM MODAL -->
+  <div class="modal" id="imgModal">
+    <div class="modalBox" style="max-width:980px">
+      <div class="closeRow">
+        <b id="imgCap">Foto</b>
+        <button class="xbtn" id="imgClose">Tutup</button>
+      </div>
+      <div class="inner" style="padding-top:10px">
+        <img id="imgBig" alt="zoom" style="width:100%; border-radius:18px; border:1px solid rgba(255,255,255,.14)" />
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================
+       CUSTOMIZE ME (EDIT INI!)
+    ========================= */
+    const CONFIG = {
+      herName: "abey",      // ganti nama panggilan pacarmu
+      fromName: "Fia",        // namamu
+      siteTitle: "Untuk Kamu 🤍",
+      typeLines: [
+        "sayangnya aku, ini tempat kecik kamo buat istirahat…",
+        "kalau capek, manja sama aku ya. aku jagain sayang.",
+        "kamoo hebat sayang, aku makin cinta.",
+        "aku sayang kamu. banyak banya banyaa."
+      ],
+      secretMessage:
+        "Pesan rahasia: awal pacaran sama kamu, emang belum jatuh cinta. tapi hari ini sampe kedepannya, kehilangan mu 1 detik saja aku tak mampu. cielah kiw wkwkwk."
+    };
+
+    /* ====== INIT TEXT ====== */
+    document.title = CONFIG.siteTitle;
+    const $ = (q)=>document.querySelector(q);
+    $("#herName").textContent = CONFIG.herName;
+    $("#forName").textContent = CONFIG.herName;
+    $("#loveName").textContent = CONFIG.siteTitle;
+    $("#fromName").textContent = CONFIG.fromName;
+
+    /* ====== TODAY ====== */
+    const d = new Date();
+    const fmt = new Intl.DateTimeFormat("id-ID", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
+    $("#todayTxt").textContent = fmt.format(d);
+
+    /* ====== TYPEWRITER ====== */
+    const typeEl = $("#typeLine");
+    let lineIdx = 0, charIdx = 0, deleting = false;
+
+    function tick(){
+      const line = CONFIG.typeLines[lineIdx % CONFIG.typeLines.length];
+      const speed = deleting ? 24 : 34;
+      if(!deleting){
+        charIdx++;
+        typeEl.textContent = line.slice(0, charIdx);
+        if(charIdx >= line.length){
+          deleting = true;
+          setTimeout(tick, 900);
+          return;
+        }
+      }else{
+        charIdx--;
+        typeEl.textContent = line.slice(0, Math.max(0,charIdx));
+        if(charIdx <= 0){
+          deleting = false;
+          lineIdx++;
+        }
+      }
+      setTimeout(tick, speed);
+    }
+    tick();
+
+    /* ====== MODALS ====== */
+    const modal = $("#modal");
+    $("#btnSurprise").addEventListener("click", ()=> modal.classList.add("open"));
+    $("#btnClose").addEventListener("click", ()=> modal.classList.remove("open"));
+    modal.addEventListener("click", (e)=>{ if(e.target === modal) modal.classList.remove("open"); });
+
+    /* ====== SECRET ====== */
+    $("#btnSecret").addEventListener("click", ()=>{
+      $("#modalTitle").textContent = "Pesan Rahasia 🔒";
+      $("#modalBody").innerHTML = CONFIG.secretMessage.replace(/\n/g,"<br>");
+      modal.classList.add("open");
+    });
+
+    /* ====== COPY LETTER ====== */
+    $("#btnCopy").addEventListener("click", async ()=>{
+      const txt = $("#letterText").textContent.trim();
+      try{
+        await navigator.clipboard.writeText(txt);
+        $("#miniLine").textContent = "Suratnya udah ke-copy 🤍";
+        setTimeout(()=> $("#miniLine").textContent = "tayangku, scroll pelan-pelan ya, ada rahasia tersembunyi.. wkwk.", 1400);
+      }catch{
+        alert("Clipboard diblokir browser. Copy manual aja ya 🙏");
+      }
+    });
+
+    /* ====== LOCAL NOTE STORAGE ====== */
+    const note = $("#note");
+    const saved = localStorage.getItem("love_note_v1");
+    if(saved) note.value = saved;
+
+    $("#btnSave").addEventListener("click", ()=>{
+      localStorage.setItem("love_note_v1", note.value);
+      $("#saveStatus").textContent = "Tersimpan ✅";
+      setTimeout(()=> $("#saveStatus").textContent="", 1200);
+    });
+    $("#btnClear").addEventListener("click", ()=>{
+      note.value = "";
+      localStorage.removeItem("love_note_v1");
+      $("#saveStatus").textContent = "Dihapus 🗑️";
+      setTimeout(()=> $("#saveStatus").textContent="", 1200);
+    });
+
+    /* ====== AUDIO (optional) ====== */
+    const audio = $("#audio");
+    audio.src = "assets/song.mp3"; // taruh file ini kalau mau
+
+    /* ====== IMAGE ZOOM ====== */
+    const imgModal = $("#imgModal");
+    const imgBig = $("#imgBig");
+    const imgCap = $("#imgCap");
+    $("#imgClose").addEventListener("click", ()=> imgModal.classList.remove("open"));
+    imgModal.addEventListener("click", (e)=>{ if(e.target === imgModal) imgModal.classList.remove("open"); });
+
+    document.querySelectorAll(".ph").forEach(el=>{
+      el.addEventListener("click", ()=>{
+        const img = el.querySelector("img");
+        imgBig.src = img.src;
+        imgCap.textContent = el.dataset.caption || "Foto";
+        imgModal.classList.add("open");
+      });
+    });
+
+    /* ====== REVEAL ON SCROLL ====== */
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{
+        if(en.isIntersecting) en.target.classList.add("in");
+      });
+    }, {threshold: .12});
+    document.querySelectorAll(".reveal").forEach(el=> io.observe(el));
+
+    /* ====== STARS CANVAS ====== */
+    const c = $("#stars"), ctx = c.getContext("2d");
+    const h = $("#hearts"), hctx = h.getContext("2d");
+    let W,Hh, stars=[], hearts=[];
+    function resize(){
+      W = c.width = h.width = window.innerWidth * devicePixelRatio;
+      Hh = c.height = h.height = window.innerHeight * devicePixelRatio;
+      c.style.width = h.style.width = window.innerWidth + "px";
+      c.style.height = h.style.height = window.innerHeight + "px";
+      initStars();
+    }
+    window.addEventListener("resize", resize);
+
+    function initStars(){
+      stars = [];
+      const n = Math.min(220, Math.floor((window.innerWidth*window.innerHeight)/9000));
+      for(let i=0;i<n;i++){
+        stars.push({
+          x: Math.random()*W,
+          y: Math.random()*Hh,
+          r: (Math.random()*1.4+0.4)*devicePixelRatio,
+          a: Math.random()*0.6+0.2,
+          v: (Math.random()*0.25+0.05)*devicePixelRatio
+        });
+      }
+    }
+
+    function drawStars(){
+      ctx.clearRect(0,0,W,Hh);
+      ctx.globalCompositeOperation = "lighter";
+      for(const s of stars){
+        s.y += s.v;
+        if(s.y > Hh) { s.y = -10; s.x = Math.random()*W; }
+        ctx.beginPath();
+        ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+        ctx.fillStyle = `rgba(255,255,255,${s.a})`;
+        ctx.fill();
+      }
+      ctx.globalCompositeOperation = "source-over";
+    }
+
+    /* ====== HEART PARTICLES ====== */
+    function spawnHeart(x,y,boost=false){
+      hearts.push({
+        x, y,
+        vx: (Math.random()*2-1) * (boost?2.2:1.2) * devicePixelRatio,
+        vy: (-Math.random()*2 - 1.5) * (boost?2.6:1.4) * devicePixelRatio,
+        s: (Math.random()*8+10) * devicePixelRatio * (boost?1.25:1),
+        a: 1
+      });
+    }
+
+    function drawHeartShape(x,y,size,alpha){
+      hctx.save();
+      hctx.translate(x,y);
+      hctx.globalAlpha = alpha;
+      hctx.rotate(Math.sin((x+y)/12000)*0.2);
+      // gradient-ish fill via shadow
+      hctx.fillStyle = "rgba(255,255,255,.92)";
+      hctx.shadowColor = "rgba(255,79,216,.55)";
+      hctx.shadowBlur = 18 * devicePixelRatio;
+
+      hctx.beginPath();
+      const s = size;
+      hctx.moveTo(0, -s*0.25);
+      hctx.bezierCurveTo(s*0.5, -s*0.85, s*1.25, -s*0.15, 0, s*0.95);
+      hctx.bezierCurveTo(-s*1.25, -s*0.15, -s*0.5, -s*0.85, 0, -s*0.25);
+      hctx.closePath();
+      hctx.fill();
+      hctx.restore();
+    }
+
+    function updateHearts(){
+      hctx.clearRect(0,0,W,Hh);
+      hearts = hearts.filter(p=>p.a>0.02);
+      for(const p of hearts){
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.02 * devicePixelRatio; // gravity
+        p.a *= 0.985;
+        drawHeartShape(p.x,p.y,p.s,p.a);
+      }
+    }
+
+    /* ====== BUTTON ACTIONS ====== */
+    let hugCount = 0;
+    $("#btnHug").addEventListener("click", (e)=>{
+      hugCount++;
+      const rect = e.target.getBoundingClientRect();
+      const x = (rect.left + rect.width/2) * devicePixelRatio;
+      const y = (rect.top + rect.height/2) * devicePixelRatio;
+      for(let i=0;i<18;i++) spawnHeart(x + (Math.random()*120-60)*devicePixelRatio, y, true);
+      $("#miniLine").textContent = "peluk dulu ya… 🤍";
+      setTimeout(()=> $("#miniLine").textContent = "Tip: scroll pelan—ada yang gemes di tiap section.", 1400);
+
+      if(hugCount === 3){
+        $("#modalTitle").textContent = "Tiga peluk… berarti kangen ya? 😳";
+        $("#modalBody").innerHTML = `Aku kangen juga, ${CONFIG.herName}.<br/><br/>Kalau kamu baca ini, berarti kamu lagi butuh tenang. Aku di sini ya.`;
+        modal.classList.add("open");
+      }
+    });
+
+    $("#btnBoost").addEventListener("click", ()=>{
+      // breathing prompt + soft heart rain
+      $("#moodText").textContent = "Tarik napas 4 detik… tahan 2… hembus 6… ulang 3x. yeay enakan ga bey 🤍";
+      const x = (window.innerWidth/2) * devicePixelRatio;
+      const y = (window.innerHeight*0.75) * devicePixelRatio;
+      for(let i=0;i<36;i++) spawnHeart(x + (Math.random()*520-260)*devicePixelRatio, y, true);
+    });
+
+    $("#btnConfetti").addEventListener("click", ()=>{
+      const x = (window.innerWidth/2) * devicePixelRatio;
+      const y = (window.innerHeight*0.35) * devicePixelRatio;
+      for(let i=0;i<60;i++) spawnHeart(x + (Math.random()*900-450)*devicePixelRatio, y, true);
+    });
+
+    $("#btnGlow").addEventListener("click", ()=>{
+      document.body.style.background =
+        "radial-gradient(1200px 800px at 15% 10%, rgba(255,0,128,.28), transparent 60%)," +
+        "radial-gradient(1000px 700px at 85% 20%, rgba(0,200,255,.22), transparent 55%)," +
+        "radial-gradient(900px 600px at 50% 90%, rgba(120,255,180,.16), transparent 55%), #070A12";
+      $("#modalBody").innerHTML = `Mode hangat ON ✨<br/><br/>${CONFIG.herName}, kamu boleh capek. Tapi kamu gak sendirian.`;
+    });
+
+    $("#btnZoomOut").addEventListener("click", ()=>{
+      modal.classList.remove("open");
+      document.querySelector("#gallery").scrollIntoView({behavior:"smooth", block:"start"});
+    });
+
+    /* ====== SHIFT+L “ROMANTIC MODE” ====== */
+    let romantic = false;
+    window.addEventListener("keydown", (e)=>{
+      if(e.shiftKey && (e.key === "L" || e.key === "l")){
+        romantic = !romantic;
+        const hint = $("#hint");
+        hint.style.display = romantic ? "none" : "flex";
+        $("#miniLine").textContent = romantic ? "mode romantis: ON 🌙" : "Tip: scroll pelan—ada yang gemes di tiap section.";
+        // little burst
+        const x = (window.innerWidth/2) * devicePixelRatio;
+        const y = (window.innerHeight*0.5) * devicePixelRatio;
+        for(let i=0;i<40;i++) spawnHeart(x + (Math.random()*680-340)* devicePixelRatio, y, true);
+      }
+    });
+
+    /* ====== ANIMATION LOOP ====== */
+    function loop(){
+      drawStars();
+      updateHearts();
+      requestAnimationFrame(loop);
+    }
+
+    /* spawn occasional hearts */
+    setInterval(()=>{
+      const x = Math.random()*W;
+      const y = (window.innerHeight*0.92) * devicePixelRatio;
+      spawnHeart(x,y,false);
+    }, 520);
+
+    resize();
+    loop();
+  </script>
+</body>
+</html>
